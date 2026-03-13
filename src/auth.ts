@@ -1,17 +1,8 @@
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import { DrizzleAdapter } from "@auth/drizzle-adapter"
-
-import { db } from "@/db"
-import { loginUser } from "@/lib/auth/login"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: DrizzleAdapter(db),
-
-  session: {
-    strategy: "database",
-  },
-
+  secret: process.env.AUTH_SECRET,
   providers: [
     Credentials({
       credentials: {
@@ -20,9 +11,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
 
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null
-        }
+        const { loginUser } = await import("@/lib/auth/login")
 
         const user = await loginUser(
           credentials.email as string,
@@ -38,4 +27,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+
+  session: {
+    strategy: "jwt",   // 👈 ESSENCIAL
+  },
+
+  pages: {
+    signIn: "/login",
+  },
 })
