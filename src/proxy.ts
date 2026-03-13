@@ -32,9 +32,9 @@ export default auth((req) => {
   }
 
   // 🔒 rota admin
-  if (
-    isAdminRoute &&
-    req.auth?.user?.email !== process.env.DEV_LOGIN_EMAIL
+    if (
+    pathname.startsWith("/admin") &&
+    req.auth?.user?.role !== "admin"
   ) {
     return NextResponse.redirect(
       new URL("/dashboard", req.nextUrl.origin)

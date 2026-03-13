@@ -1,4 +1,5 @@
 import { getSessionUser } from "@/lib/auth/sessions"
+import LogoutButton from "@/components/logout-button"
 
 export default async function Header() {
   const user = await getSessionUser()
@@ -14,6 +15,8 @@ export default async function Header() {
         <div className="text-sm text-muted-foreground">
           {user?.email}
         </div>
+
+        <LogoutButton />
 
       </div>
     </header>
